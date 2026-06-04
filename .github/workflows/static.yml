@@ -33,14 +33,17 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: HTML/CSS/JS Minifier
-        uses: docker://devatherock/minify-js:3.1.0
-        with:
-          add_suffix: false
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Minify HTML
+        run: |
+          mkdir dist
+          bunx @minify-html/node@0.18.1 --minify-css --minify-js --output dist/index.html index.html
+          cp hideshots.png CNAME dist/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
